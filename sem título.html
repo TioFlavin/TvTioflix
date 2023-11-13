@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Administração de Canais de TV</title>
+    <style>
+    	body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #80FF00;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        section {
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        .channelList {
+            margin-top: 20px;
+        }
+
+        .channelCard {
+            margin: 10px;
+            text-align: center;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 250px;
+        }
+
+        .channelCard img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .channelName {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #toggleButton {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #toggleButton:hover {
+            background-color: #555;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        section {
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Painel Canais de TV</h1>
+    </header>
+
+    <section>
+        <h2>Adicionar Canal</h2>
+        <form id="channelForm">
+            <label for="channelCover">Link da Capa:</label>
+            <input type="text" id="channelCover" name="channelCover">
+            <label for="channelName">Nome do Canal:</label>
+            <input type="text" id="channelName" name="channelName">
+            <label for="channelPlayer">Link do Player:</label>
+            <input type="text" id="channelPlayer" name="channelPlayer">
+            <label for="channelCategory">Categoria:</label>
+            <select id="channelCategory" name="channelCategory">
+                <option value="Futebol">Futebol</option>
+                <option value="Canais Abertos">Canais Abertos</option>
+                <option value="Canais Fechados">Canais Fechados</option>
+                <option value="Filmes">Filmes</option>
+            </select>
+            <button type="submit">Adicionar Canal</button>
+        </form>
+    </section>
+
+   <section>
+        <h2>Canais</h2>
+        <button id="toggleButton">Mostrar Canais</button>
+        <div class="channelList" id="channelList"></div>
+    </section>
+        
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const channelForm = document.getElementById("channelForm");
+
+            channelForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                
+                const channelCover = document.getElementById("channelCover").value;
+                const channelName = document.getElementById("channelName").value;
+                const channelPlayer = document.getElementById("channelPlayer").value;
+                const channelCategory = document.getElementById("channelCategory").value;
+
+                // Crie um objeto JSON com os detalhes do canal, incluindo a categoria
+                const newChannel = {
+                    cover: channelCover,
+                    name: channelName,
+                    player: channelPlayer,
+                    category: channelCategory
+                };
+
+                // Recupere o JSON existente (supondo que esteja em uma variável jsonChannels)
+                let jsonChannels = [];
+
+                // Verifique se já existem canais no JSON
+                if (localStorage.getItem("channels")) {
+                    jsonChannels = JSON.parse(localStorage.getItem("channels"));
+                }
+
+                // Adicione o novo canal à lista
+                jsonChannels.push(newChannel);
+
+                // Atualize o JSON no armazenamento local
+                localStorage.setItem("channels", JSON.stringify(jsonChannels));
+
+                // Limpe o formulário
+                channelForm.reset();
+
+                // Exiba uma mensagem de sucesso ou redirecione para outra página
+                alert("Canal adicionado com sucesso!");
+            });
+        });
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const channelForm = document.getElementById("channelForm");
+            const channelList = document.getElementById("channelList");
+            const toggleButton = document.getElementById("toggleButton");
+
+            // Recupere o JSON do armazenamento local (supondo que esteja em uma variável jsonChannels)
+            let jsonChannels = localStorage.getItem("channels");
+
+            // Verifique se há algum JSON no armazenamento local
+            if (jsonChannels) {
+                jsonChannels = JSON.parse(jsonChannels);
+
+                // Função para mostrar/ocultar canais
+                const toggleChannels = () => {
+                    if (channelList.style.display === "none") {
+                        channelList.style.display = "block";
+                    } else {
+                        channelList.style.display = "none";
+                    }
+                };
+
+                // Adicione a ação de clique ao botão
+                toggleButton.addEventListener("click", toggleChannels);
+
+                // Função para adicionar um canal à lista
+                const addChannelToList = (channel) => {
+                    const channelCard = document.createElement("div");
+                    channelCard.className = "channelCard";
+                    channelCard.innerHTML = `
+                        <img src="${channel.cover}" alt="Capa do Canal">
+                        <div class="channelName">${channel.name}</div>
+                        <button class="deleteButton">Excluir</button>
+                    `;
+                    channelList.appendChild(channelCard);
+
+                    // Adicione um ouvinte de evento para o botão de exclusão
+                    const deleteButton = channelCard.querySelector(".deleteButton");
+                    deleteButton.addEventListener("click", () => {
+                        // Remova o canal da lista
+                        const index = jsonChannels.indexOf(channel);
+                        if (index !== -1) {
+                            jsonChannels.splice(index, 1);
+                            // Atualize o JSON no armazenamento local
+                            localStorage.setItem("channels", JSON.stringify(jsonChannels));
+                            // Remova o elemento do DOM
+                            channelList.removeChild(channelCard);
+                        }
+                    });
+                };
+
+                // Exiba os canais quando a página carregar
+                for (const channel of jsonChannels) {
+                    addChannelToList(channel);
+                }
+            } else {
+                channelList.textContent = "Nenhum JSON encontrado.";
+            }
+
+            channelForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                // Adicione aqui a lógica para adicionar um novo canal ao JSON e à lista
+                // Certifique-se de atualizar o JSON no armazenamento local após adicionar.
+            });
+        });
+        
+    </script>
+
+    <footer>
+        <p>&copy; 2023 Painel Admin Canais de TV</p>
+    </footer>
+</body>
+</html>

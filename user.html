@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Verificar Conteúdo JSON</title>
+    <link href="https://vjs.zencdn.net/7.16.0/video-js.css" rel="stylesheet">
+    <style>
+    	
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #80FF00;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        section {
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .channelList {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            margin: -20px;
+        }
+
+        .channelCard {
+            margin: 4px;
+            text-align: center;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            width: 200px;
+            cursor: pointer;
+        }
+
+        .channelCard img {
+            max-width: 100%;
+            border-radius: 4px;
+        }
+
+        .channelName {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Estilo para o player de vídeo */
+        video {
+            background-color: #000; /* Define o fundo preto */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Canais Online 24Hrs</h1>
+    </header>
+
+    <section>
+        <h2>Futebol</h2>
+        <div class="channelList" id="futebolList"></div>
+    </section>
+
+    <section>
+        <h2>Canais Abertos</h2>
+        <div class="channelList" id="abertosList"></div>
+    </section>
+
+    <section>
+        <h2>Canais Fechados</h2>
+        <div class="channelList" id="fechadosList"></div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const futebolList = document.getElementById("futebolList");
+            const abertosList = document.getElementById("abertosList");
+            const fechadosList = document.getElementById("fechadosList");
+
+            let jsonChannels = localStorage.getItem("channels");
+
+            if (jsonChannels) {
+                jsonChannels = JSON.parse(jsonChannels);
+
+                // Exiba apenas a capa e o nome dos canais
+                for (const channel of jsonChannels) {
+                    const channelCard = document.createElement("div");
+                    channelCard.className = "channelCard";
+                    channelCard.innerHTML = `
+                        <img src="${channel.cover}" alt="Capa do Canal">
+                        <div class="channelName">${channel.name}</div>
+                    `;
+                    channelCard.addEventListener("click", function() {
+                        openPlayerFullScreen(channel.player);
+                    });
+
+                    if (channel.category === "Futebol") {
+                        futebolList.appendChild(channelCard);
+                    } else if (channel.category === "Canais Abertos") {
+                        abertosList.appendChild(channelCard);
+                    } else if (channel.category === "Canais Fechados") {
+                        fechadosList.appendChild(channelCard);
+                    }
+                }
+            } else {
+                futebolList.textContent = "Nenhum JSON encontrado.";
+                abertosList.textContent = "Nenhum JSON encontrado.";
+                fechadosList.textContent = "Nenhum JSON encontrado.";
+            }
+
+            // Função para abrir o player em tela cheia
+            function openPlayerFullScreen(playerUrl) {
+                const video = document.createElement("video");
+                video.src = playerUrl;
+                video.controls = true;
+                video.style.width = "100%";
+                video.style.height = "100%";
+                document.body.innerHTML = '';
+                document.body.appendChild(video);
+
+                video.addEventListener('click', () => {
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    } else if (video.mozRequestFullScreen) {
+                        video.mozRequestFullScreen();
+                    } else if (video.webkitRequestFullscreen) {
+                        video.webkitRequestFullscreen();
+                    } else if (video.msRequestFullscreen) {
+                        video.msRequestFullscreen();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <footer>
+        <p>&copy; 2023 Painel Admin Canais de TV</p>
+    </footer>
+</body>
+</html>
